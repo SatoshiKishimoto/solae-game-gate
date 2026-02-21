@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>Solae Games</title>
 
-  <meta name="description" content="Solae公式ミニゲーム。広告表示後にゲームを開始できます。" />
+  <meta name="description" content="Solae official mini games. Start after the ad is shown." />
   <meta property="og:title" content="Solae Games" />
-  <meta property="og:description" content="Solae公式ミニゲーム。広告表示後にゲームを開始できます。" />
+  <meta property="og:description" content="Solae official mini games. Start after the ad is shown." />
   <meta property="og:type" content="website" />
 
   <style>
@@ -19,7 +19,14 @@
     .logoLink{display:inline-flex;align-items:center;gap:10px;text-decoration:none}
     .logo{height:34px;display:block;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,.35))}
     .brand{font-weight:900;letter-spacing:.3px}
-    .topRight{font-size:12px;color:var(--muted);white-space:nowrap}
+    .topRight{display:flex;align-items:center;gap:10px}
+    .status{font-size:12px;color:var(--muted);white-space:nowrap}
+    .lang{display:inline-flex;border:1px solid rgba(255,255,255,.14);border-radius:999px;overflow:hidden}
+    .lang button{
+      border:0;background:transparent;color:var(--muted);
+      padding:6px 10px;font-weight:900;cursor:pointer;font-size:12px
+    }
+    .lang button.active{background:rgba(255,255,255,.10);color:#fff}
 
     .box{
       background:rgba(255,255,255,.04);
@@ -78,32 +85,37 @@
         <img class="logo" src="https://lh3.googleusercontent.com/d/1ejao3rdNer6UppKTaAAFlC3ILTR0RcUP" alt="Solae">
         <div class="brand">Solae Games</div>
       </a>
-      <div class="topRight" id="statusTop">ゲート</div>
+
+      <div class="topRight">
+        <div class="lang" aria-label="Language">
+          <button id="btnJA" type="button">JA</button>
+          <button id="btnEN" type="button">EN</button>
+        </div>
+        <div class="status" id="statusTop">Gate</div>
+      </div>
     </div>
 
     <div class="box">
-      <h2 id="headline">ゲームを開始する前に…</h2>
-      <p id="subtext">広告の読み込み状況によっては、表示に少し時間がかかることがあります。</p>
+      <h2 id="headline">…</h2>
+      <p id="subtext">…</p>
 
       <div id="ad-area">
         <div id="ad-wait" class="pulse">
-          <span class="badge">広告を読み込み中</span>
+          <span class="badge" id="adBadge">…</span>
           <span class="dot"></span><span class="dot"></span><span class="dot"></span>
         </div>
       </div>
 
       <div id="count">5</div>
 
-      <button id="go" class="btn primary hide">▶ ゲームを始める</button>
+      <!-- ✅ START統一 -->
+      <button id="go" class="btn primary hide">▶ START</button>
 
-      <div id="waitHint" class="small hide" style="margin-top:10px;text-align:center">
-        広告の取得が遅れています。<br>
-        <b>待ってもOK</b>（最大15秒で自動的に解放されます）／<b>すぐ開始してもOK</b>
-      </div>
+      <div id="waitHint" class="small hide" style="margin-top:10px;text-align:center"></div>
 
       <div class="row">
-        <button id="back" class="btn secondary">← 戻る</button>
-        <button id="copy" class="btn secondary">リンクをコピー</button>
+        <button id="back" class="btn secondary">…</button>
+        <button id="copy" class="btn secondary">…</button>
       </div>
 
       <div id="err" class="err hide"></div>
@@ -112,26 +124,88 @@
 
   <script>
     // =============================
-    // 設定
+    // i18n
     // =============================
-    const MIN_WAIT = 5;   // 最短待ち秒
-    const MAX_WAIT = 15;  // 最大待ち秒
+    const I18N = {
+      ja: {
+        gate: 'ゲート',
+        waiting: '広告読み込み中…',
+        ready: '開始できます',
+        readyWait: '開始できます（広告待ち可）',
+        moving: '移動中…',
+        errTitle: 'エラー',
+        head: 'ゲームを開始する前に…',
+        sub: '広告の読み込み状況によっては、表示に少し時間がかかることがあります。',
+        adLoading: '広告を読み込み中',
+        waitHint: '広告の取得が遅れています。<br><b>待ってもOK</b>（最大15秒で自動解放）／<b>すぐ開始してもOK</b>',
+        back: '← 戻る',
+        copy: 'リンクをコピー',
+        copied: 'コピーしました',
+        copyFail: 'コピー失敗',
+        noTo: '遷移先が指定されていません（URLの ?to= がありません）。',
+        badLink: (m)=> 'リンクが不正です：' + m + '\\n例：?to=' + encodeURIComponent('https://script.google.com/macros/s/XXXXX/exec')
+      },
+      en: {
+        gate: 'Gate',
+        waiting: 'Loading ad…',
+        ready: 'Ready',
+        readyWait: 'Ready (you may wait for ad)',
+        moving: 'Opening…',
+        errTitle: 'Error',
+        head: 'Before you start…',
+        sub: 'Depending on your network, the ad may take a little longer to load.',
+        adLoading: 'Loading ad',
+        waitHint: 'Ad is taking longer than usual.<br><b>You can wait</b> (auto release within 15s) / <b>or start now</b>.',
+        back: '← Back',
+        copy: 'Copy link',
+        copied: 'Copied',
+        copyFail: 'Copy failed',
+        noTo: 'Missing destination (no ?to= in the URL).',
+        badLink: (m)=> 'Invalid link: ' + m + '\\nExample: ?to=' + encodeURIComponent('https://script.google.com/macros/s/XXXXX/exec')
+      }
+    };
 
-    // ✅ 開始クリック後、遷移を少し遅らせる（広告発火の猶予）
-    const NAV_DELAY_MS = 450;
+    const KEY_LANG = 'solae_lang';
+    const btnJA = document.getElementById('btnJA');
+    const btnEN = document.getElementById('btnEN');
 
-    // 遷移先の許可ドメイン（GASのみ）
-    const ALLOWED_HOSTS = new Set([
-      'script.google.com',
-      'script.googleusercontent.com'
-    ]);
+    function detectDefaultLang(){
+      const nav = (navigator.language || '').toLowerCase();
+      return nav.startsWith('ja') ? 'ja' : 'en';
+    }
 
-    // ゲートのホーム（?to無しで来た場合の戻り先）
+    let lang = localStorage.getItem(KEY_LANG) || detectDefaultLang();
+    if (!I18N[lang]) lang = 'en';
+
+    function t(){ return I18N[lang]; }
+
+    function applyLangUI(){
+      btnJA.classList.toggle('active', lang==='ja');
+      btnEN.classList.toggle('active', lang==='en');
+
+      document.getElementById('headline').textContent = t().head;
+      document.getElementById('subtext').textContent  = t().sub;
+      document.getElementById('adBadge').textContent  = t().adLoading;
+      document.getElementById('back').textContent     = t().back;
+      document.getElementById('copy').textContent     = t().copy;
+      document.getElementById('statusTop').textContent= t().gate;
+      document.documentElement.lang = lang;
+    }
+
+    btnJA.addEventListener('click', ()=>{ lang='ja'; localStorage.setItem(KEY_LANG, lang); applyLangUI(); });
+    btnEN.addEventListener('click', ()=>{ lang='en'; localStorage.setItem(KEY_LANG, lang); applyLangUI(); });
+
+    applyLangUI();
+
+    // =============================
+    // Gate logic
+    // =============================
+    const MIN_WAIT = 5;
+    const MAX_WAIT = 15;
+
+    const ALLOWED_HOSTS = new Set(['script.google.com','script.googleusercontent.com']);
     const GATE_HOME = 'https://satoshikishimoto.github.io/solae-game-gate/';
 
-    // =============================
-    // DOM
-    // =============================
     const params   = new URLSearchParams(location.search);
     const rawTo    = params.get('to');
 
@@ -144,17 +218,16 @@
     const waitHint = document.getElementById('waitHint');
     const adArea   = document.getElementById('ad-area');
 
-    // =============================
-    // Helpers
-    // =============================
+    function setStatus(text){ statusTop.textContent = text; }
+
     function showError(msg){
       errEl.textContent = msg;
       errEl.classList.remove('hide');
       countEl.textContent = '—';
       countEl.style.opacity = .5;
       goBtn.classList.add('hide');
-      statusTop.textContent = 'エラー';
       waitHint.classList.add('hide');
+      setStatus(t().errTitle);
     }
 
     function deepDecode(s){
@@ -172,30 +245,16 @@
 
     function validateAndNormalize(urlStr){
       const u = new URL(urlStr);
-      if (u.protocol !== 'https:' && u.protocol !== 'http:') {
-        throw new Error('URLが http/https ではありません。');
-      }
-      if (!ALLOWED_HOSTS.has(u.hostname)) {
-        throw new Error('許可されていない遷移先です。');
-      }
+      if (u.protocol !== 'https:' && u.protocol !== 'http:') throw new Error('URL must be http/https.');
+      if (!ALLOWED_HOSTS.has(u.hostname)) throw new Error('Destination host is not allowed.');
       return u.toString();
     }
 
-    function setAdStatus(text){
-      statusTop.textContent = text;
-    }
-
-    // ✅ “広告が来たっぽい”判定を少し改善
     function looksAdReady(){
-      // 初期の待機UIがある状態は要素数が少ない
-      // iframe/script/div等が増えてきたら広告が来た可能性が高い
-      const nodes = adArea.querySelectorAll('iframe, ins, script, div');
-      return nodes.length >= 3; // 少しゆるく
+      // 緩い判定：要素数が増えたら「来た可能性」
+      return adArea.querySelectorAll('*').length > 3;
     }
 
-    // =============================
-    // UI handlers
-    // =============================
     backBtn.addEventListener('click', () => {
       if (history.length > 1) history.back();
       else location.href = GATE_HOME;
@@ -205,99 +264,81 @@
       try{
         await navigator.clipboard.writeText(location.href);
         const old = copyBtn.textContent;
-        copyBtn.textContent = 'コピーしました';
-        setTimeout(() => copyBtn.textContent = old, 1100);
+        copyBtn.textContent = t().copied;
+        setTimeout(() => copyBtn.textContent = t().copy, 1100);
       }catch(e){
         const old = copyBtn.textContent;
-        copyBtn.textContent = 'コピー失敗';
-        setTimeout(() => copyBtn.textContent = old, 1100);
+        copyBtn.textContent = t().copyFail;
+        setTimeout(() => copyBtn.textContent = t().copy, 1100);
       }
     });
 
-    // =============================
-    // Main
-    // =============================
     if (!rawTo){
-      setAdStatus('エラー');
-      showError('遷移先が指定されていません（URLの ?to= がありません）。');
+      setStatus(t().errTitle);
+      showError(t().noTo);
     } else {
       let dest = null;
       try{
         const decoded = deepDecode(rawTo);
         dest = validateAndNormalize(decoded);
       } catch(e){
-        showError(
-          'リンクが不正です：' + (e?.message || String(e)) + '\n' +
-          '例：?to=' + encodeURIComponent('https://script.google.com/macros/s/XXXXX/exec')
-        );
+        showError(t().badLink(e?.message || String(e)));
       }
 
       if (dest){
-        setAdStatus('広告読み込み中…');
+        setStatus(t().waiting);
 
-        // まず MIN_WAIT でカウントダウン
         let sec = MIN_WAIT;
         countEl.textContent = String(sec);
 
-        const t = setInterval(() => {
+        const t1 = setInterval(() => {
           sec--;
           countEl.textContent = String(sec);
 
           if (sec <= 0) {
-            clearInterval(t);
+            clearInterval(t1);
 
-            // 開始ボタンを出す（ここから押せる）
             countEl.classList.add('hide');
             goBtn.classList.remove('hide');
             goBtn.disabled = false;
 
             if (!looksAdReady()){
+              waitHint.innerHTML = t().waitHint;
               waitHint.classList.remove('hide');
-              setAdStatus('開始できます（広告待ち可）');
+              setStatus(t().readyWait);
             } else {
               waitHint.classList.add('hide');
-              setAdStatus('開始できます');
+              setStatus(t().ready);
             }
 
-            // MAX_WAIT まで監視して、来たら表示更新
             const start = Date.now();
-            const timer2 = setInterval(() => {
+            const t2 = setInterval(() => {
               const elapsed = Math.floor((Date.now() - start) / 1000);
               const remaining = MAX_WAIT - MIN_WAIT - elapsed;
 
               if (looksAdReady()){
                 waitHint.classList.add('hide');
-                setAdStatus('開始できます');
-                clearInterval(timer2);
+                setStatus(t().ready);
+                clearInterval(t2);
               } else if (remaining <= 0){
-                setAdStatus('開始できます（広告が遅い可能性）');
-                clearInterval(timer2);
+                setStatus(lang==='ja' ? '開始できます（広告が遅い可能性）' : 'Ready (ad may be delayed)');
+                clearInterval(t2);
               }
             }, 500);
 
-            // ✅ 開始クリック：少し待ってから遷移（重要）
             goBtn.addEventListener('click', () => {
-              setAdStatus('広告表示→移動中…');
-
-              // Safari対策：フォーカスを明示
-              try { window.focus(); } catch(e){}
-
-              // すぐ遷移すると広告が出る前に消えるので少し待つ
-              setTimeout(() => {
-                location.href = dest;
-              }, NAV_DELAY_MS);
-
+              setStatus(t().moving);
+              location.href = dest;
             }, { once:true });
           }
         }, 1000);
 
-        // 盤面のDOM変化を軽く監視（広告が来たらステータス更新）
         const mo = new MutationObserver(() => {
           if (looksAdReady()){
             waitHint.classList.add('hide');
             if (!errEl.classList.contains('hide')) return;
-            if (goBtn.classList.contains('hide')) setAdStatus('広告表示準備OK');
-            else setAdStatus('開始できます');
+            if (goBtn.classList.contains('hide')) setStatus(lang==='ja' ? '広告表示準備OK' : 'Ad ready');
+            else setStatus(t().ready);
           }
         });
         mo.observe(adArea, { childList:true, subtree:true });
