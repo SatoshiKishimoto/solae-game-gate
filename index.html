@@ -13,11 +13,9 @@
   <style>
     :root{--bg:#0b0f1a;--card:#121a2b;--text:#fff;--muted:#aab3d6;--blue:#2563eb;--danger:#ff5c5c}
     body{margin:0;font-family:system-ui,-apple-system,"Noto Sans JP",sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:grid;place-items:center}
-    .wrap{width:min(520px,92vw);padding:18px}
+    .wrap{width:min(560px,92vw);padding:18px}
 
-    .top{
-      display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px
-    }
+    .top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
     .logoLink{display:inline-flex;align-items:center;gap:10px;text-decoration:none}
     .logo{height:34px;display:block;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,.35))}
     .brand{font-weight:900;letter-spacing:.3px}
@@ -35,11 +33,20 @@
     p{margin:0 0 14px;color:var(--muted);font-size:13px;line-height:1.6}
 
     #ad-area{
-      min-height:120px;border-radius:14px;background:rgba(255,255,255,.06);
+      min-height:140px;border-radius:14px;background:rgba(255,255,255,.06);
       border:1px dashed rgba(255,255,255,.18);
       display:flex;align-items:center;justify-content:center;
-      color:#7b86b3;font-weight:800;margin:10px 0 14px; padding:10px; text-align:center
+      color:#7b86b3;font-weight:900;margin:10px 0 14px; padding:12px; text-align:center;
+      position:relative; overflow:hidden;
     }
+
+    .pulse{
+      display:inline-flex;align-items:center;gap:10px;color:#9aa6d6;font-weight:900
+    }
+    .dot{width:8px;height:8px;border-radius:999px;background:#9aa6d6;opacity:.35;animation:pulse 1.1s infinite}
+    .dot:nth-child(2){animation-delay:.15s}
+    .dot:nth-child(3){animation-delay:.30s}
+    @keyframes pulse{0%{transform:translateY(0);opacity:.25}50%{transform:translateY(-2px);opacity:.95}100%{transform:translateY(0);opacity:.25}}
 
     #count{font-size:46px;font-weight:1000;text-align:center;margin:10px 0 12px}
     .btn{width:100%;border:0;border-radius:14px;padding:14px 16px;font-size:16px;font-weight:1000;cursor:pointer}
@@ -53,35 +60,50 @@
     .err{color:var(--danger);font-weight:900;font-size:12px;margin-top:10px;line-height:1.5;white-space:pre-line}
     .hide{display:none}
     .small{font-size:12px;color:var(--muted)}
+    .badge{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:6px 10px;border-radius:999px;
+      background:rgba(255,255,255,.07);
+      border:1px solid rgba(255,255,255,.10);
+      font-size:12px;color:var(--muted)
+    }
   </style>
+
+  <!-- ✅ Monetag（あなたの zone のタグ） -->
   <script src="https://quge5.com/88/tag.min.js" data-zone="213013" async data-cfasync="false"></script>
 </head>
 
 <body>
   <div class="wrap">
     <div class="top">
-      <!-- ✅ ロゴにリンク（Solaeサイトへ） -->
       <a class="logoLink" href="https://solae.my.canva.site/" target="_blank" rel="noopener">
         <img class="logo" src="https://lh3.googleusercontent.com/d/1ejao3rdNer6UppKTaAAFlC3ILTR0RcUP" alt="Solae">
         <div class="brand">Solae Games</div>
       </a>
-
-      <!-- ✅ 右上はステータス表示だけ（タイトル扱いしない） -->
       <div class="topRight" id="statusTop">ゲート</div>
     </div>
 
     <div class="box">
       <h2 id="headline">ゲームを開始する前に…</h2>
-      <p id="subtext">下の表示が終わったら「ゲームを始める」が押せます。</p>
+      <p id="subtext">広告の読み込み状況によっては、表示に少し時間がかかることがあります。</p>
 
-      <!-- ✅ ここに広告タグ -->
       <div id="ad-area">
-        広告エリア（ここにタグ）<br>
-        <span class="small">※タグを入れない場合も動作します</span>
+        <div id="ad-wait" class="pulse">
+          <span class="badge">広告を読み込み中</span>
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        </div>
       </div>
 
       <div id="count">5</div>
+
+      <!-- 5秒で出す（押せる） -->
       <button id="go" class="btn primary hide">▶ ゲームを始める</button>
+
+      <!-- 5秒後〜15秒まで表示（任意で待ってもらう） -->
+      <div id="waitHint" class="small hide" style="margin-top:10px;text-align:center">
+        広告の取得が遅れています。<br>
+        <b>待ってもOK</b>（最大15秒で自動的に解放されます）／<b>すぐ開始してもOK</b>
+      </div>
 
       <div class="row">
         <button id="back" class="btn secondary">← 戻る</button>
@@ -89,35 +111,44 @@
       </div>
 
       <div id="err" class="err hide"></div>
-
-      <!-- ✅ 注意文は「表示しない」（必要ならここを復活） -->
-      <!-- <div class="small" style="margin-top:10px;text-align:center">
-        ※URL直打ち対策を強化したい場合は次に「トークン方式」に進めます。
-      </div> -->
     </div>
   </div>
 
   <script>
     // =============================
-    // 設定：許可する遷移先ドメイン
+    // 設定
     // =============================
+    const MIN_WAIT = 5;   // 最短待ち秒
+    const MAX_WAIT = 15;  // 最大待ち秒（これ以上は待たせない）
+
+    // 遷移先の許可ドメイン（GASのみ）
     const ALLOWED_HOSTS = new Set([
       'script.google.com',
       'script.googleusercontent.com'
     ]);
 
+    // ゲートのホーム（?to無しで来た場合の戻り先）
     const GATE_HOME = 'https://satoshikishimoto.github.io/solae-game-gate/';
 
-    const params = new URLSearchParams(location.search);
-    const rawTo = params.get('to');
+    // =============================
+    // DOM
+    // =============================
+    const params   = new URLSearchParams(location.search);
+    const rawTo    = params.get('to');
 
-    const goBtn = document.getElementById('go');
-    const countEl = document.getElementById('count');
-    const errEl = document.getElementById('err');
-    const backBtn = document.getElementById('back');
-    const copyBtn = document.getElementById('copy');
-    const statusTop = document.getElementById('statusTop');
+    const goBtn    = document.getElementById('go');
+    const countEl  = document.getElementById('count');
+    const errEl    = document.getElementById('err');
+    const backBtn  = document.getElementById('back');
+    const copyBtn  = document.getElementById('copy');
+    const statusTop= document.getElementById('statusTop');
+    const waitHint = document.getElementById('waitHint');
+    const adArea   = document.getElementById('ad-area');
+    const adWait   = document.getElementById('ad-wait');
 
+    // =============================
+    // Helpers
+    // =============================
     function showError(msg){
       errEl.textContent = msg;
       errEl.classList.remove('hide');
@@ -125,6 +156,7 @@
       countEl.style.opacity = .5;
       goBtn.classList.add('hide');
       statusTop.textContent = 'エラー';
+      waitHint.classList.add('hide');
     }
 
     function deepDecode(s){
@@ -153,6 +185,21 @@
       return u.toString();
     }
 
+    function setAdStatus(text){
+      statusTop.textContent = text;
+    }
+
+    // “広告が来たっぽい”を軽く判定（完全保証はできないが体感改善）
+    function looksAdReady(){
+      // Monetagの形式によってはDOM変化しないことがあるため、緩い判定
+      // ad-area 内に何か要素が増えていたら「来た可能性あり」
+      const childCount = adArea.querySelectorAll('*').length;
+      return childCount > 3; // 初期より増えたらOK扱い
+    }
+
+    // =============================
+    // UI handlers
+    // =============================
     backBtn.addEventListener('click', () => {
       if (history.length > 1) history.back();
       else location.href = GATE_HOME;
@@ -171,7 +218,12 @@
       }
     });
 
+    // =============================
+    // Main
+    // =============================
     if (!rawTo){
+      setAdStatus('エラー');
+      // adエリアは残す（広告だけ見せたい場合もあるため）
       showError('遷移先が指定されていません（URLの ?to= がありません）。');
     } else {
       let dest = null;
@@ -186,27 +238,71 @@
       }
 
       if (dest){
-        statusTop.textContent = '待機中…';
+        setAdStatus('広告読み込み中…');
 
-        let sec = 5;
+        // まず MIN_WAIT でカウントダウン
+        let sec = MIN_WAIT;
         countEl.textContent = String(sec);
 
         const t = setInterval(() => {
           sec--;
           countEl.textContent = String(sec);
+
           if (sec <= 0) {
             clearInterval(t);
+
+            // 開始ボタンを出す（ここから押せる）
             countEl.classList.add('hide');
             goBtn.classList.remove('hide');
             goBtn.disabled = false;
-            statusTop.textContent = '開始できます';
+
+            // MIN_WAIT 時点で広告が来てなさそうなら注意表示
+            if (!looksAdReady()){
+              waitHint.classList.remove('hide');
+              setAdStatus('開始できます（広告待ち可）');
+            } else {
+              setAdStatus('開始できます');
+              waitHint.classList.add('hide');
+            }
+
+            // MAX_WAIT まで待つと表示を更新（ユーザー安心用）
+            const start = Date.now();
+            const timer2 = setInterval(() => {
+              const elapsed = Math.floor((Date.now() - start) / 1000);
+              const remaining = MAX_WAIT - MIN_WAIT - elapsed;
+
+              if (looksAdReady()){
+                // 広告が来たっぽい
+                waitHint.classList.add('hide');
+                setAdStatus('開始できます');
+                clearInterval(timer2);
+              } else if (remaining <= 0){
+                // これ以上待たせない
+                setAdStatus('開始できます（広告が遅い可能性）');
+                clearInterval(timer2);
+              }
+            }, 500);
+
+            // クリックで遷移
+            goBtn.addEventListener('click', () => {
+              setAdStatus('移動中…');
+              location.href = dest;
+            }, { once:true });
           }
         }, 1000);
 
-        goBtn.addEventListener('click', () => {
-          statusTop.textContent = '移動中…';
-          location.href = dest;
-        }, { once:true });
+        // 保険：広告の読み込みが進んだら、待ち文言を消す
+        // DOM変化監視（軽量）
+        const mo = new MutationObserver(() => {
+          if (looksAdReady()){
+            waitHint.classList.add('hide');
+            if (!errEl.classList.contains('hide')) return;
+            // まだ開始前ならステータスだけ更新
+            if (goBtn.classList.contains('hide')) setAdStatus('広告表示準備OK');
+            else setAdStatus('開始できます');
+          }
+        });
+        mo.observe(adArea, { childList:true, subtree:true });
       }
     }
   </script>
