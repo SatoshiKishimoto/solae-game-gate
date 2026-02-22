@@ -3,39 +3,27 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Solae Games</title>
+  <title>Solae Games Gate</title>
 
-  <meta name="description" content="Solae official mini games. Start after the ad is shown." />
+  <meta name="description" content="Solae公式ミニゲーム。広告表示後にゲームを開始できます。" />
   <meta property="og:title" content="Solae Games" />
-  <meta property="og:description" content="Solae official mini games. Start after the ad is shown." />
+  <meta property="og:description" content="Solae公式ミニゲーム。広告表示後にゲームを開始できます。" />
   <meta property="og:type" content="website" />
 
   <style>
-    :root{--bg:#0b0f1a;--card:#121a2b;--text:#fff;--muted:#aab3d6;--blue:#2563eb;--danger:#ff5c5c}
+    :root{--bg:#0b0f1a;--card:#121a2b;--text:#fff;--muted:#aab3d6;--blue:#2563eb;--danger:#ff5c5c;--line:rgba(255,255,255,.10)}
     body{margin:0;font-family:system-ui,-apple-system,"Noto Sans JP",sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:grid;place-items:center}
     .wrap{width:min(560px,92vw);padding:18px}
-
     .top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
-    .logoLink{display:inline-flex;align-items:center;gap:10px;text-decoration:none}
+    .logoLink{display:inline-flex;align-items:center;gap:10px;text-decoration:none;color:inherit}
     .logo{height:34px;display:block;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,.35))}
-    .brand{font-weight:900;letter-spacing:.3px}
-    .topRight{display:flex;align-items:center;gap:10px}
-    .status{font-size:12px;color:var(--muted);white-space:nowrap}
-    .lang{display:inline-flex;border:1px solid rgba(255,255,255,.14);border-radius:999px;overflow:hidden}
-    .lang button{
-      border:0;background:transparent;color:var(--muted);
-      padding:6px 10px;font-weight:900;cursor:pointer;font-size:12px
-    }
-    .lang button.active{background:rgba(255,255,255,.10);color:#fff}
+    .brand{font-weight:1000;letter-spacing:.3px}
+    .topRight{font-size:12px;color:var(--muted);white-space:nowrap;display:flex;align-items:center;gap:10px}
+    .lang{display:flex;gap:6px;align-items:center;background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:999px;padding:6px}
+    .chip{border:0;border-radius:999px;padding:6px 10px;font-weight:900;cursor:pointer;background:transparent;color:var(--muted)}
+    .chip.on{background:rgba(255,255,255,.10);color:#fff}
 
-    .box{
-      background:rgba(255,255,255,.04);
-      border:1px solid rgba(255,255,255,.10);
-      border-radius:18px;
-      padding:16px 14px;
-      box-shadow:0 16px 40px rgba(0,0,0,.30)
-    }
-
+    .box{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:18px;padding:16px 14px;box-shadow:0 16px 40px rgba(0,0,0,.30)}
     h2{margin:0 0 6px;font-size:18px}
     p{margin:0 0 14px;color:var(--muted);font-size:13px;line-height:1.6}
 
@@ -52,298 +40,290 @@
     .dot:nth-child(2){animation-delay:.15s}
     .dot:nth-child(3){animation-delay:.30s}
     @keyframes pulse{0%{transform:translateY(0);opacity:.25}50%{transform:translateY(-2px);opacity:.95}100%{transform:translateY(0);opacity:.25}}
+    .badge{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.10);font-size:12px;color:var(--muted)}
 
     #count{font-size:46px;font-weight:1000;text-align:center;margin:10px 0 12px}
     .btn{width:100%;border:0;border-radius:14px;padding:14px 16px;font-size:16px;font-weight:1000;cursor:pointer}
     .btn.primary{background:linear-gradient(180deg,#3b82f6,var(--blue));color:#fff}
     .btn.secondary{background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.12)}
     .btn:disabled{opacity:.5;cursor:not-allowed}
-
     .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
     .row .btn{flex:1}
-
     .err{color:var(--danger);font-weight:900;font-size:12px;margin-top:10px;line-height:1.5;white-space:pre-line}
     .hide{display:none}
-    .small{font-size:12px;color:var(--muted)}
-    .badge{
-      display:inline-flex;align-items:center;gap:8px;
-      padding:6px 10px;border-radius:999px;
-      background:rgba(255,255,255,.07);
-      border:1px solid rgba(255,255,255,.10);
-      font-size:12px;color:var(--muted)
-    }
+    .small{font-size:12px;color:var(--muted);line-height:1.6}
   </style>
 
-  <!-- ✅ Monetag（あなたの zone のタグ） -->
+  <!-- ✅ Monetag（zoneタグ） -->
   <script src="https://quge5.com/88/tag.min.js" data-zone="213013" async data-cfasync="false"></script>
 </head>
 
 <body>
   <div class="wrap">
     <div class="top">
-      <a class="logoLink" href="https://solae.my.canva.site/" target="_blank" rel="noopener">
+      <a class="logoLink" href="https://satoshikishimoto.github.io/?lang=ja" id="homeLink">
         <img class="logo" src="https://lh3.googleusercontent.com/d/1ejao3rdNer6UppKTaAAFlC3ILTR0RcUP" alt="Solae">
         <div class="brand">Solae Games</div>
       </a>
 
       <div class="topRight">
-        <div class="lang" aria-label="Language">
-          <button id="btnJA" type="button">JA</button>
-          <button id="btnEN" type="button">EN</button>
+        <span id="statusTop">Gate</span>
+        <div class="lang">
+          <button class="chip" id="jaBtn">JA</button>
+          <button class="chip" id="enBtn">EN</button>
         </div>
-        <div class="status" id="statusTop">Gate</div>
       </div>
     </div>
 
     <div class="box">
-      <h2 id="headline">…</h2>
-      <p id="subtext">…</p>
+      <h2 id="headline">ゲームを開始する前に…</h2>
+      <p id="subtext">広告の読み込み状況によっては、表示に少し時間がかかることがあります。</p>
 
       <div id="ad-area">
         <div id="ad-wait" class="pulse">
-          <span class="badge" id="adBadge">…</span>
+          <span class="badge" id="adBadge">広告を読み込み中</span>
           <span class="dot"></span><span class="dot"></span><span class="dot"></span>
         </div>
       </div>
 
       <div id="count">5</div>
-
-      <!-- ✅ START統一 -->
       <button id="go" class="btn primary hide">▶ START</button>
 
-      <div id="waitHint" class="small hide" style="margin-top:10px;text-align:center"></div>
+      <div id="waitHint" class="small hide" style="margin-top:10px;text-align:center">
+        広告の取得が遅れています。<br>
+        <b>待ってもOK</b>（最大15秒で自動的に解放）／<b>すぐ開始してもOK</b>
+      </div>
 
       <div class="row">
-        <button id="back" class="btn secondary">…</button>
-        <button id="copy" class="btn secondary">…</button>
+        <button id="back" class="btn secondary">← 戻る</button>
+        <button id="copy" class="btn secondary">リンクをコピー</button>
       </div>
 
       <div id="err" class="err hide"></div>
     </div>
   </div>
 
-  <script>
-    // =============================
-    // i18n
-    // =============================
-    const I18N = {
-      ja: {
-        gate: 'ゲート',
-        waiting: '広告読み込み中…',
-        ready: '開始できます',
-        readyWait: '開始できます（広告待ち可）',
-        moving: '移動中…',
-        errTitle: 'エラー',
-        head: 'ゲームを開始する前に…',
-        sub: '広告の読み込み状況によっては、表示に少し時間がかかることがあります。',
-        adLoading: '広告を読み込み中',
-        waitHint: '広告の取得が遅れています。<br><b>待ってもOK</b>（最大15秒で自動解放）／<b>すぐ開始してもOK</b>',
-        back: '← 戻る',
-        copy: 'リンクをコピー',
-        copied: 'コピーしました',
-        copyFail: 'コピー失敗',
-        noTo: '遷移先が指定されていません（URLの ?to= がありません）。',
-        badLink: (m)=> 'リンクが不正です：' + m + '\\n例：?to=' + encodeURIComponent('https://script.google.com/macros/s/XXXXX/exec')
-      },
-      en: {
-        gate: 'Gate',
-        waiting: 'Loading ad…',
-        ready: 'Ready',
-        readyWait: 'Ready (you may wait for ad)',
-        moving: 'Opening…',
-        errTitle: 'Error',
-        head: 'Before you start…',
-        sub: 'Depending on your network, the ad may take a little longer to load.',
-        adLoading: 'Loading ad',
-        waitHint: 'Ad is taking longer than usual.<br><b>You can wait</b> (auto release within 15s) / <b>or start now</b>.',
-        back: '← Back',
-        copy: 'Copy link',
-        copied: 'Copied',
-        copyFail: 'Copy failed',
-        noTo: 'Missing destination (no ?to= in the URL).',
-        badLink: (m)=> 'Invalid link: ' + m + '\\nExample: ?to=' + encodeURIComponent('https://script.google.com/macros/s/XXXXX/exec')
-      }
-    };
+<script>
+(() => {
+  const MIN_WAIT = 5;
+  const MAX_WAIT = 15;
 
-    const KEY_LANG = 'solae_lang';
-    const btnJA = document.getElementById('btnJA');
-    const btnEN = document.getElementById('btnEN');
+  const ALLOWED_PROTOCOLS = new Set(['https:', 'http:']);
 
-    function detectDefaultLang(){
-      const nav = (navigator.language || '').toLowerCase();
-      return nav.startsWith('ja') ? 'ja' : 'en';
+  // GitHubトップ（戻り先）
+  const HOME_URL = "https://satoshikishimoto.github.io/";
+
+  const params = new URLSearchParams(location.search);
+  const rawTo = params.get('to');
+  const langQ = (params.get('lang') || '').toLowerCase();
+
+  const goBtn   = document.getElementById('go');
+  const countEl = document.getElementById('count');
+  const errEl   = document.getElementById('err');
+  const backBtn = document.getElementById('back');
+  const copyBtn = document.getElementById('copy');
+  const statusTop = document.getElementById('statusTop');
+  const waitHint = document.getElementById('waitHint');
+  const adArea = document.getElementById('ad-area');
+
+  const jaBtn = document.getElementById('jaBtn');
+  const enBtn = document.getElementById('enBtn');
+  const headline = document.getElementById('headline');
+  const subtext = document.getElementById('subtext');
+  const adBadge = document.getElementById('adBadge');
+  const homeLink = document.getElementById('homeLink');
+
+  const i18n = {
+    ja: {
+      gate:"ゲート", before:"ゲームを開始する前に…",
+      sub:"広告の読み込み状況によっては、表示に少し時間がかかることがあります。",
+      loading:"広告を読み込み中",
+      start:"▶ START（広告）",
+      back:"← 戻る",
+      copy:"リンクをコピー",
+      copied:"コピーしました",
+      copyFail:"コピー失敗",
+      waitHint:"広告の取得が遅れています。<br><b>待ってもOK</b>（最大15秒で自動的に解放）／<b>すぐ開始してもOK</b>",
+      errNoTo:"遷移先が指定されていません（URLの ?to= がありません）。"
+    },
+    en: {
+      gate:"Gate", before:"Before starting…",
+      sub:"Depending on your network, ads may take a bit longer to load.",
+      loading:"Loading ad…",
+      start:"▶ START (AD)",
+      back:"← Back",
+      copy:"Copy link",
+      copied:"Copied",
+      copyFail:"Copy failed",
+      waitHint:"Ad is taking longer to load.<br><b>You can wait</b> (auto unlock up to 15s) / <b>or start now</b>.",
+      errNoTo:"Destination is missing. (No ?to= in URL)"
     }
+  };
 
-    let lang = localStorage.getItem(KEY_LANG) || detectDefaultLang();
-    if (!I18N[lang]) lang = 'en';
+  function getLang(){
+    const saved = (localStorage.getItem('solae_lang') || '').toLowerCase();
+    const lang = (langQ==='en'||langQ==='ja') ? langQ : (saved==='en'||saved==='ja') ? saved : 'ja';
+    return lang;
+  }
+  function setLang(lang){
+    localStorage.setItem('solae_lang', lang);
+    applyLang(lang);
+    const u = new URL(location.href);
+    u.searchParams.set('lang', lang);
+    history.replaceState(null, "", u.toString());
+  }
+  function applyLang(lang){
+    document.documentElement.lang = lang;
+    jaBtn.classList.toggle('on', lang==='ja');
+    enBtn.classList.toggle('on', lang==='en');
+    statusTop.textContent = i18n[lang].gate;
+    headline.textContent = i18n[lang].before;
+    subtext.textContent = i18n[lang].sub;
+    adBadge.textContent = i18n[lang].loading;
+    goBtn.textContent = i18n[lang].start;
+    backBtn.textContent = i18n[lang].back;
+    copyBtn.textContent = i18n[lang].copy;
+    waitHint.innerHTML = i18n[lang].waitHint;
+    homeLink.href = HOME_URL + "?lang=" + lang;
+  }
 
-    function t(){ return I18N[lang]; }
+  jaBtn.onclick = ()=> setLang('ja');
+  enBtn.onclick = ()=> setLang('en');
 
-    function applyLangUI(){
-      btnJA.classList.toggle('active', lang==='ja');
-      btnEN.classList.toggle('active', lang==='en');
+  function showError(msg){
+    errEl.textContent = msg;
+    errEl.classList.remove('hide');
+    countEl.textContent = '—';
+    countEl.style.opacity = .5;
+    goBtn.classList.add('hide');
+    waitHint.classList.add('hide');
+    statusTop.textContent = 'Error';
+  }
 
-      document.getElementById('headline').textContent = t().head;
-      document.getElementById('subtext').textContent  = t().sub;
-      document.getElementById('adBadge').textContent  = t().adLoading;
-      document.getElementById('back').textContent     = t().back;
-      document.getElementById('copy').textContent     = t().copy;
-      document.getElementById('statusTop').textContent= t().gate;
-      document.documentElement.lang = lang;
-    }
-
-    btnJA.addEventListener('click', ()=>{ lang='ja'; localStorage.setItem(KEY_LANG, lang); applyLangUI(); });
-    btnEN.addEventListener('click', ()=>{ lang='en'; localStorage.setItem(KEY_LANG, lang); applyLangUI(); });
-
-    applyLangUI();
-
-    // =============================
-    // Gate logic
-    // =============================
-    const MIN_WAIT = 5;
-    const MAX_WAIT = 15;
-
-    const ALLOWED_HOSTS = new Set(['script.google.com','script.googleusercontent.com']);
-    const GATE_HOME = 'https://satoshikishimoto.github.io/solae-game-gate/';
-
-    const params   = new URLSearchParams(location.search);
-    const rawTo    = params.get('to');
-
-    const goBtn    = document.getElementById('go');
-    const countEl  = document.getElementById('count');
-    const errEl    = document.getElementById('err');
-    const backBtn  = document.getElementById('back');
-    const copyBtn  = document.getElementById('copy');
-    const statusTop= document.getElementById('statusTop');
-    const waitHint = document.getElementById('waitHint');
-    const adArea   = document.getElementById('ad-area');
-
-    function setStatus(text){ statusTop.textContent = text; }
-
-    function showError(msg){
-      errEl.textContent = msg;
-      errEl.classList.remove('hide');
-      countEl.textContent = '—';
-      countEl.style.opacity = .5;
-      goBtn.classList.add('hide');
-      waitHint.classList.add('hide');
-      setStatus(t().errTitle);
-    }
-
-    function deepDecode(s){
-      let out = (s ?? '').toString().trim();
-      out = out.replace(/^["']|["']$/g, '');
-      for (let i = 0; i < 3; i++){
-        try{
-          const dec = decodeURIComponent(out);
-          if (dec === out) break;
-          out = dec;
-        }catch(e){ break; }
-      }
-      return out.trim();
-    }
-
-    function validateAndNormalize(urlStr){
-      const u = new URL(urlStr);
-      if (u.protocol !== 'https:' && u.protocol !== 'http:') throw new Error('URL must be http/https.');
-      if (!ALLOWED_HOSTS.has(u.hostname)) throw new Error('Destination host is not allowed.');
-      return u.toString();
-    }
-
-    function looksAdReady(){
-      // 緩い判定：要素数が増えたら「来た可能性」
-      return adArea.querySelectorAll('*').length > 3;
-    }
-
-    backBtn.addEventListener('click', () => {
-      if (history.length > 1) history.back();
-      else location.href = GATE_HOME;
-    });
-
-    copyBtn.addEventListener('click', async () => {
+  function deepDecode(s){
+    let out = (s ?? '').toString().trim();
+    out = out.replace(/^["']|["']$/g, '');
+    for (let i = 0; i < 3; i++){
       try{
-        await navigator.clipboard.writeText(location.href);
-        const old = copyBtn.textContent;
-        copyBtn.textContent = t().copied;
-        setTimeout(() => copyBtn.textContent = t().copy, 1100);
-      }catch(e){
-        const old = copyBtn.textContent;
-        copyBtn.textContent = t().copyFail;
-        setTimeout(() => copyBtn.textContent = t().copy, 1100);
-      }
-    });
-
-    if (!rawTo){
-      setStatus(t().errTitle);
-      showError(t().noTo);
-    } else {
-      let dest = null;
-      try{
-        const decoded = deepDecode(rawTo);
-        dest = validateAndNormalize(decoded);
-      } catch(e){
-        showError(t().badLink(e?.message || String(e)));
-      }
-
-      if (dest){
-        setStatus(t().waiting);
-
-        let sec = MIN_WAIT;
-        countEl.textContent = String(sec);
-
-        const t1 = setInterval(() => {
-          sec--;
-          countEl.textContent = String(sec);
-
-          if (sec <= 0) {
-            clearInterval(t1);
-
-            countEl.classList.add('hide');
-            goBtn.classList.remove('hide');
-            goBtn.disabled = false;
-
-            if (!looksAdReady()){
-              waitHint.innerHTML = t().waitHint;
-              waitHint.classList.remove('hide');
-              setStatus(t().readyWait);
-            } else {
-              waitHint.classList.add('hide');
-              setStatus(t().ready);
-            }
-
-            const start = Date.now();
-            const t2 = setInterval(() => {
-              const elapsed = Math.floor((Date.now() - start) / 1000);
-              const remaining = MAX_WAIT - MIN_WAIT - elapsed;
-
-              if (looksAdReady()){
-                waitHint.classList.add('hide');
-                setStatus(t().ready);
-                clearInterval(t2);
-              } else if (remaining <= 0){
-                setStatus(lang==='ja' ? '開始できます（広告が遅い可能性）' : 'Ready (ad may be delayed)');
-                clearInterval(t2);
-              }
-            }, 500);
-
-            goBtn.addEventListener('click', () => {
-              setStatus(t().moving);
-              location.href = dest;
-            }, { once:true });
-          }
-        }, 1000);
-
-        const mo = new MutationObserver(() => {
-          if (looksAdReady()){
-            waitHint.classList.add('hide');
-            if (!errEl.classList.contains('hide')) return;
-            if (goBtn.classList.contains('hide')) setStatus(lang==='ja' ? '広告表示準備OK' : 'Ad ready');
-            else setStatus(t().ready);
-          }
-        });
-        mo.observe(adArea, { childList:true, subtree:true });
-      }
+        const dec = decodeURIComponent(out);
+        if (dec === out) break;
+        out = dec;
+      }catch(e){ break; }
     }
-  </script>
+    return out.trim();
+  }
+
+  function normalizeDest(destRaw){
+    const u = new URL(destRaw);
+    if (!ALLOWED_PROTOCOLS.has(u.protocol)) throw new Error("URL must be http/https");
+    return u;
+  }
+
+  // “広告が来たっぽい”を軽く判定（保証はできないが体感改善）
+  function looksAdReady(){
+    const childCount = adArea.querySelectorAll('*').length;
+    return childCount > 3;
+  }
+
+  backBtn.addEventListener('click', () => {
+    if (history.length > 1) history.back();
+    else location.href = HOME_URL + "?lang=" + getLang();
+  });
+
+  copyBtn.addEventListener('click', async () => {
+    const lang = getLang();
+    try{
+      await navigator.clipboard.writeText(location.href);
+      const old = copyBtn.textContent;
+      copyBtn.textContent = i18n[lang].copied;
+      setTimeout(() => copyBtn.textContent = i18n[lang].copy, 1100);
+    }catch(e){
+      const old = copyBtn.textContent;
+      copyBtn.textContent = i18n[lang].copyFail;
+      setTimeout(() => copyBtn.textContent = i18n[lang].copy, 1100);
+    }
+  });
+
+  // init
+  const lang = getLang();
+  applyLang(lang);
+
+  if (!rawTo){
+    showError(i18n[lang].errNoTo);
+    return;
+  }
+
+  let destUrl;
+  try{
+    destUrl = normalizeDest(deepDecode(rawTo));
+  }catch(e){
+    showError("リンクが不正です： " + (e?.message || String(e)));
+    return;
+  }
+
+  // ✅戻り先へ lang / from=gate / cache bust を付与（毎回広告を出しやすく）
+  destUrl.searchParams.set('from', 'gate');
+  destUrl.searchParams.set('lang', lang);
+  destUrl.searchParams.set('v', Date.now().toString());
+
+  statusTop.textContent = i18n[lang].loading;
+
+  // MIN_WAIT カウントダウン（ここまで待てば開始できる）
+  let sec = MIN_WAIT;
+  countEl.textContent = String(sec);
+
+  const t = setInterval(() => {
+    sec--;
+    countEl.textContent = String(sec);
+    if (sec <= 0){
+      clearInterval(t);
+
+      countEl.classList.add('hide');
+      goBtn.classList.remove('hide');
+      goBtn.disabled = false;
+
+      if (!looksAdReady()){
+        waitHint.classList.remove('hide');
+        statusTop.textContent = (lang==='ja') ? "開始できます（広告待ち可）" : "You can start (optional wait)";
+      }else{
+        waitHint.classList.add('hide');
+        statusTop.textContent = (lang==='ja') ? "開始できます" : "Ready";
+      }
+
+      // MAX_WAIT まで“待ってもOK”の体感補助
+      const start = Date.now();
+      const timer2 = setInterval(() => {
+        if (looksAdReady()){
+          waitHint.classList.add('hide');
+          statusTop.textContent = (lang==='ja') ? "開始できます" : "Ready";
+          clearInterval(timer2);
+          return;
+        }
+        const elapsed = Math.floor((Date.now()-start)/1000);
+        if (elapsed >= (MAX_WAIT - MIN_WAIT)){
+          statusTop.textContent = (lang==='ja') ? "開始できます（広告が遅い可能性）" : "Ready (ad may be slow)";
+          clearInterval(timer2);
+        }
+      }, 500);
+
+      goBtn.addEventListener('click', () => {
+        statusTop.textContent = (lang==='ja') ? "移動中…" : "Opening…";
+        location.href = destUrl.toString();
+      }, { once:true });
+
+      // DOM変化監視（広告が来たら表示を整える）
+      const mo = new MutationObserver(() => {
+        if (looksAdReady()){
+          waitHint.classList.add('hide');
+          if (goBtn.classList.contains('hide')) statusTop.textContent = (lang==='ja') ? "広告表示準備OK" : "Ad ready";
+          else statusTop.textContent = (lang==='ja') ? "開始できます" : "Ready";
+        }
+      });
+      mo.observe(adArea, { childList:true, subtree:true });
+    }
+  }, 1000);
+
+})();
+</script>
 </body>
 </html>
